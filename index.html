@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="author" content="Sujith Bevara" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CA8 — Bear Ninja Hunter (Arrays, Loops, Forced Case)</title>
+
+  <style>
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      margin:2rem;
+      background:#fafafa;
+    }
+    #panel{
+      background:white;
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:1rem;
+      max-width:500px;
+    }
+    .line{margin:.5rem 0;}
+    .win{color:green;font-weight:bold;}
+    .lose{color:crimson;font-weight:bold;}
+    .tie{color:#333;font-weight:bold;}
+  </style>
+</head>
+<body>
+
+  <h1>Bear Ninja Hunter — Part 3</h1>
+
+  <div id="panel">
+    <div id="out1" class="line"></div>
+    <div id="out2" class="line"></div>
+    <div id="out3" class="line"></div>
+  </div>
+
+  <script type="text/javascript">
+    "use strict";
+
+
+    // All variables at top
+    const choices = ["Bear", "Ninja", "Hunter"];    // array of valid choices
+    const validAliases = ["b","bear","n","ninja","h","hunter"];
+
+    let playerName = "";
+    let playerRaw = "";
+    let playerNorm = "";
+    let playerChoice = "";
+
+    let computerIndex = -1;
+    let computerChoice = "";
+
+    let winnerLabel = "";
+    let resultsText = "";
+
+    let loopReply = "";
+    let keepPlaying = true;
+
+    let out1 = document.getElementById("out1");
+    let out2 = document.getElementById("out2");
+    let out3 = document.getElementById("out3");
+
+
+    // Starting the  game
+
+    playerName = prompt("Welcome to Bear Hunter Ninja! Please enter your name to get started:");
+    if (playerName === null) {
+      alert("Game cancelled. Refresh to start again.");
+      out1.textContent = "Game cancelled.";
+    } else {
+      alert("Hi " + playerName + "! Let's Play!");
+
+      // Replay Loop
+
+      do {
+
+        // Prompt user choice
+        playerRaw = prompt("Who are you: Bear, Ninja, or Hunter?");
+        if (playerRaw === null) {
+          alert("Game cancelled. Thanks for playing, " + playerName + "!");
+          keepPlaying = false;
+          break;
+        }
+
+        // Forced case
+        playerNorm = String(playerRaw).trim().toLowerCase();
+
+        // Empty input handling
+        if (playerNorm === "") {
+          alert("No input entered.\nValid: Bear, Ninja, or Hunter (B/N/H).\nRefresh to try again.");
+          location.reload();
+        }
+
+        // Validate the input
+        if (validAliases.indexOf(playerNorm) === -1) {
+          alert("Invalid input: \"" + playerRaw + "\"\nValid: Bear, Ninja, or Hunter (B/N/H).\nRefresh to try again.");
+          location.reload();
+        }
+
+        switch (playerNorm) {
+          case "b": case "bear":   playerChoice = "Bear";   break;
+          case "n": case "ninja":  playerChoice = "Ninja";  break;
+          case "h": case "hunter": playerChoice = "Hunter"; break;
+        }
+
+        // Random computer choice from an array 
+        computerIndex = Math.floor(Math.random() * choices.length);
+        computerChoice = choices[computerIndex];
+
+
+        // Determine winner 
+
+        if (playerChoice === "Bear"   && computerChoice === "Bear")   { winnerLabel = "Tie"; }
+        else if (playerChoice === "Bear"   && computerChoice === "Ninja")  { winnerLabel = "User"; }
+        else if (playerChoice === "Bear"   && computerChoice === "Hunter") { winnerLabel = "Computer"; }
+
+        else if (playerChoice === "Ninja"  && computerChoice === "Bear")   { winnerLabel = "Computer"; }
+        else if (playerChoice === "Ninja"  && computerChoice === "Ninja")  { winnerLabel = "Tie"; }
+        else if (playerChoice === "Ninja"  && computerChoice === "Hunter") { winnerLabel = "User"; }
+
+        else if (playerChoice === "Hunter" && computerChoice === "Bear")   { winnerLabel = "User"; }
+        else if (playerChoice === "Hunter" && computerChoice === "Ninja")  { winnerLabel = "Computer"; }
+        else if (playerChoice === "Hunter" && computerChoice === "Hunter") { winnerLabel = "Tie"; }
+
+        if (winnerLabel === "User")         resultsText = "You Win!";
+        else if (winnerLabel === "Computer") resultsText = "Computer Wins!";
+        else                                 resultsText = "Tie!";
+
+        // Result and Replay Prompt
+
+        loopReply = prompt(
+          playerName + ", you chose: " + playerChoice +
+          "\nComputer chose: " + computerChoice +
+          "\n\nResult: " + resultsText +
+          "\n\nPlay again? (Y/N)"
+        );
+
+        if (loopReply === null) {
+          alert("Thanks for playing, " + playerName + "!");
+          keepPlaying = false;
+          break;
+        }
+
+        loopReply = loopReply.trim().toLowerCase();
+
+        if (loopReply === "y" || loopReply === "yes") { keepPlaying = true; }
+        else if (loopReply === "n" || loopReply === "no") { keepPlaying = false; }
+        else if (loopReply === "") {
+          alert("No replay input.\nRefresh to try again.");
+          location.reload();
+        } else {
+          alert("Invalid replay input: \"" + loopReply + "\"\nRefresh to try again.");
+          location.reload();
+        }
+
+      } while (keepPlaying);
+
+      out1.textContent = playerName + " you chose " + playerChoice + "!";
+      out2.textContent = "The computer chose " + computerChoice + "!";
+
+      if (resultsText === "You Win!")      { out3.textContent = resultsText; out3.className = "line win"; }
+      else if (resultsText === "Computer Wins!") { out3.textContent = resultsText; out3.className = "line lose"; }
+      else                                   { out3.textContent = resultsText; out3.className = "line tie"; }
+
+      console.log(playerName + " you chose " + playerChoice + "!");
+      console.log("The computer chose " + computerChoice + "!");
+      console.log(resultsText);
+    }
+  </script>
+
+</body>
+</html>
